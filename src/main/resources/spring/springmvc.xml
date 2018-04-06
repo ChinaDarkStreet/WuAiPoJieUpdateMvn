@@ -1,0 +1,56 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+	    http://www.springframework.org/schema/mvc
+	    http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+http://www.springframework.org/schema/tx " default-autowire="byName">
+    <!-- 配置注解扫描 -->
+    <context:component-scan base-package="com.mtl.controller, com.mtl.service, com.mtl.pojo"/>
+
+    <!-- 加载注解驱动 -->
+    <mvc:annotation-driven conversion-service="formattingConversionService"/>
+
+    <!-- 配置静态资源路径 -->
+    <!--<mvc:resources mapping="/css/**" location="/css/"/>-->
+    <!--<mvc:resources mapping="/upload/**" location="/upload/"/>-->
+    <!--<mvc:resources mapping="/My97DatePicker/**" location="/My97DatePicker/"/>-->
+    <!--<mvc:resources mapping="/images/**" location="/images/"/>-->
+    <!--<mvc:resources mapping="/js/**" location="/js/"/>-->
+
+    <!-- 配置日期类型转换器 -->
+    <bean id="formattingConversionService"
+          class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <property name="formatterRegistrars">
+            <set>
+                <bean class="org.springframework.format.datetime.DateFormatterRegistrar">
+                    <property name="formatter">
+                        <bean class="org.springframework.format.datetime.DateFormatter">
+                            <property name="pattern" value="yyyy-MM-dd"></property>
+                        </bean>
+                    </property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+
+    <!-- 配置异常解析器 -->
+    <bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver" id="exceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="MaxUploadSizeExceededException">/error.jsp</prop>
+            </props>
+        </property>
+    </bean>
+
+</beans>

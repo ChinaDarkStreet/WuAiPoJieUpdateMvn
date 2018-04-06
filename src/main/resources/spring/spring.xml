@@ -1,0 +1,67 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx " default-autowire="byName">
+
+    <!-- 加载jdbc配置文件 -->
+    <context:property-placeholder location="classpath:db.properties"></context:property-placeholder>
+    <!-- 配置dataSource -->
+    <bean class="org.springframework.jdbc.datasource.DriverManagerDataSource" id="dataSource">
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.username}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!-- 配置factory -->
+    <bean class="org.mybatis.spring.SqlSessionFactoryBean" id="factory">
+        <property name="typeAliasesPackage" value="com.mtl.pojo"/>
+    </bean>
+    <!-- 配置mapper -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="factory"/>
+        <property name="basePackage" value="com.mtl.mapper"/>
+    </bean>
+
+    <!-- 配置cglib动态代理 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy>
+
+    <!-- 配置声明式事务管理器 -->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager" id="transactionManager"/>
+    <tx:advice transaction-manager="transactionManager" id="interceptor">
+        <tx:attributes>
+            <tx:method name="ins*"/>
+            <tx:method name="upd*"/>
+            <tx:method name="del*"/>
+            <tx:method name="*" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config>
+        <aop:pointcut id="point" expression="execution(* com.mtl.service.impl.*.*(..))"></aop:pointcut>
+        <aop:advisor advice-ref="interceptor" pointcut-ref="point"></aop:advisor>
+    </aop:config>
+    <!-- 配置拦截器 -->
+    <!--<mvc:interceptors>-->
+    <!--<mvc:interceptor>-->
+    <!--<mvc:mapping path="/**"/>-->
+    <!--<mvc:exclude-mapping path="/images/**"/>-->
+    <!--<bean id="dlYzInterceptor" class="com.mtl.interceptor.LoginJudgeInterceptor"></bean>-->
+    <!--</mvc:interceptor>-->
+    <!--</mvc:interceptors>-->
+    <!-- 配置AOP -->
+    <!--<bean id="logAdvice" class="com.mtl.advice.LogAdvice"></bean>-->
+    <!--<aop:config>-->
+    <!--<aop:pointcut expression="execution(* com.mtl.service.impl.*.*(..))" id="serviceimpl"/>-->
+    <!--<aop:advisor advice-ref="logAdvice" pointcut-ref="serviceimpl"/>-->
+    <!--</aop:config>-->
+</beans>

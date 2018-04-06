@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mtl.mapper.ItemMapper">
+    <insert id="insertItem" parameterType="item">
+        insert into t_item
+        values
+        (
+        DEFAULT,
+        #{title},
+        #{url},
+        #{linksAndPwdsStr},
+        #{publishTime},
+        #{authorityLevel},
+        #{partition},
+        #{auther},
+        #{replyNum},
+        #{viewNum},
+        #{lastReplyName},
+        #{lastReplyTime},
+        #{lastReplyUrl},
+        #{firstPageReply},
+        #{isNeedReply},
+        #{searchLinkTimes}
+        )
+    </insert>
+    <insert id="insertItems" parameterType="java.util.List">
+        insert into t_item
+        (
+        id,
+        title,
+        url,
+        linksAndPwdsStr,
+        publishTime,
+        authorityLevel,
+        partition,
+        auther,
+        replyNum,
+        viewNum,
+        lastReplyName,
+        lastReplyTime,
+        lastReplyUrl,
+        firstPageReply,
+        isNeedReply,
+        searchLinkTimes
+        )
+        values
+        <foreach collection="list" item="item" index= "index" separator =",">
+            (
+            DEFAULT,
+            #{item.title},
+            #{item.url},
+            #{item.linksAndPwdsStr},
+            #{item.publishTime},
+            #{item.authorityLevel},
+            #{item.partition},
+            #{item.auther},
+            #{item.replyNum},
+            #{item.viewNum},
+            #{item.lastReplyName},
+            #{item.lastReplyTime},
+            #{item.lastReplyUrl},
+            #{item.firstPageReply},
+            #{item.isNeedReply},
+            #{item.searchLinkTimes}
+            )
+        </foreach>
+
+    </insert>
+</mapper>
